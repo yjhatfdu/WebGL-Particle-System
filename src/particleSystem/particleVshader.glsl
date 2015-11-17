@@ -98,7 +98,8 @@ void main() {
 
     position=mvpMat*position;
      #if (PARTICLE_TYPE==0)
-            gl_PointSize=clamp(staticInfo.x/position.z,1.0,10.0);
+//            gl_PointSize=clamp(staticInfo.x/position.z,1.0,10.0);
+gl_PointSize=1.0;
      #endif
     #if (USE_TEXTURE==0)
     color=unpack(position[3]);

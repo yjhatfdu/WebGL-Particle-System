@@ -20,7 +20,6 @@ module Engine{
                 volume_Sphere
             }
             export class GpuParticleSystem extends Object3D{
-                //炫酷的gpu有状态PS
                 
 
 
@@ -28,11 +27,11 @@ module Engine{
                 private maxCount;
 
 
-                //emitter的状态
+
                 emitColor=[1,1,1,1];
 
 
-                //静态参数纹理
+
                 private staticInfoTexture;
 
 
@@ -56,9 +55,11 @@ module Engine{
 
                 emitVary=0;
                 emitSpeed=1;
+                emitPercent=1;
                 wind=vec3.create();
                 gravity;
                 particlePerSec;
+                emitPosition=vec3.create();
                 getCompileFlags(){
                     var result='';
                     for (var i in this.compileFlags){
@@ -66,11 +67,11 @@ module Engine{
                     }
                     return result;
                 }
-                constructor(particlePerSec,emitSpeed,size,life,lifeVary=0.1,sizeVary=0.1,sizeLevel:number=7,particleType:ParticleType=ParticleType.point,useTexture=false,emitterType:EmitterType=EmitterType.point,useWind=false,gravity=[0,0,0],speedVary=10){
+                constructor(maxParticlePerSec,emitSpeed,size,life,lifeVary=0.1,sizeVary=0.1,sizeLevel:number=8,particleType:ParticleType=ParticleType.point,useTexture=false,emitterType:EmitterType=EmitterType.point,useWind=false,gravity=[0,0,0],speedVary=10){
                     super();
                     this.maxCountSqrt=Math.pow(2,sizeLevel);
                     this.maxCount=Math.pow(this.maxCountSqrt,2);
-                    this.compileFlags['totalTime']=particlePerSec?this.maxCount/particlePerSec:Math.pow(2,64);
+                    this.compileFlags['totalTime']=maxParticlePerSec?this.maxCount/maxParticlePerSec:Math.pow(2,64);
                     this.compileFlags['PARTICLE_TYPE']=particleType;
                     this.compileFlags['USE_TEXTURE']=!!useTexture?1:0;
                     this.compileFlags['EMITTER_TYPE']=emitterType;
@@ -82,7 +83,7 @@ module Engine{
                     this.particleProperty.speedVary=speedVary;
                     this.emitSpeed=emitSpeed;
                     this.gravity=gravity;
-                    this.particlePerSec=particlePerSec
+                    this.particlePerSec=maxParticlePerSec
                 }
                 defaultPositionVBO;
                 init(){
@@ -261,7 +262,7 @@ module Engine{
                 private velpEmitVaryUL;
                 private velpSpeedVaryUL;
                 private velpDirectionUL;
-
+                private velpEmitPercentUL;
                 initVelocityProgram(flags){
                     this.updateVelocityProgram=getProgramByShaderSource(this.gl,flags+ShaderLib.defaultVShader,flags+ShaderLib.velocityFShader);
                     this.velocityTexture=this.gl.createTexture();
@@ -295,6 +296,7 @@ module Engine{
                     this.velpEmitVaryUL=this.gl.getUniformLocation(this.updateVelocityProgram,'emitVary');
                     this.velpSpeedVaryUL=this.gl.getUniformLocation(this.updateVelocityProgram,'speedVary');
                     this.velpDirectionUL=this.gl.getUniformLocation(this.updateVelocityProgram,'direction');
+                    this.velpEmitPercentUL=this.gl.getUniformLocation(this.updateVelocityProgram,'emitPercent');
                 }
 
 
@@ -328,7 +330,7 @@ module Engine{
                     this.gl.uniform1i(this.pospVelocityTextureUL,1);
                     this.gl.uniform1i(this.pospPositionTextureUL,0);
                     this.gl.uniform1i(this.pospStaicTextureUL,2);
-                    this.gl.uniform3fv(this.pospEmitterPositionUL,this.position);
+                    this.gl.uniform3fv(this.pospEmitterPositionUL,this.emitPosition);
                     if(this.compileFlags.EMITTER_TYPE==2){
                     //todo
                     }
@@ -372,6 +374,7 @@ module Engine{
                     this.gl.uniform1f(this.velpEmitVaryUL,this.emitVary);
                     this.gl.uniform1f(this.velpEmitSpeedUL,this.emitSpeed);
                     this.gl.uniform3fv(this.velpGravityUL,this.gravity);
+                    this.gl.uniform1f(this.velpEmitPercentUL,this.emitPercent);
                     if(this.compileFlags.USE_WIND==1){
                         this.gl.uniform3fv(this.velpWindUL,this.wind);
                     }

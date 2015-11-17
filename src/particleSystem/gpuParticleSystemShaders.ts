@@ -30,9 +30,11 @@ vec4 fcolor=color;
 #else
 fcolor=texture2D(particleTexture,vUvCoord);
 #endif
-float fopacity=1.0-2.0*distance(uv,vec2(0.5,0.5));
-fcolor.w=fcolor.w*fopacity;
-gl_FragColor=vec4(1.0,1.0,1.0,fopacity*opacity);
+//float fopacity=1.0-2.0*distance(uv,vec2(0.5,0.5));
+//float fopacity=1.0-step(0.5,distance(uv,vec2(0.5,0.5)));
+//fcolor.w=fcolor.w*fopacity;
+//gl_FragColor=vec4(1.0,1.0,1.0,fopacity*opacity);
+gl_FragColor=vec4(1.0,1.0,1.0,1.0);
 }`;static particleVShader=`
 #define PARTICLE_TYPE 0
 //#define totalTime 10.0
@@ -108,7 +110,8 @@ void main() {
         #endif
     position=mvpMat*position;
      #if (PARTICLE_TYPE==0)
-            gl_PointSize=clamp(staticInfo.x/position.z,1.0,10.0);
+//            gl_PointSize=clamp(staticInfo.x/position.z,1.0,10.0);
+gl_PointSize=1.0;
      #endif
     #if (USE_TEXTURE==0)
     color=unpack(position[3]);
@@ -212,6 +215,7 @@ uniform vec3 wind;
 #endif
 uniform float emitSpeed;
 uniform float emitVary;
+uniform float emitPercent;
 uniform float speedVary;
 #if (EMITTER_TYPE==0)
 #elif (EMITTER_TYPE==1)
@@ -240,6 +244,10 @@ void main() {
       }
       highp float offsetTime=mod(currentTime,totalTime)-staticInfo.z;
      if(offsetTime<deltaTime&&offsetTime>0.0){
+     if(rnd()>emitPercent){
+     gl_FragColor=vec4(0.0,0.0,0.0,0.0);
+     return;
+     }
         #if (EMITTER_TYPE==0)
             vec3 dir=normalize(vec3(rnd_ext(),rnd_ext(),rnd_ext()));
         #elif (EMITTER_TYPE==1)

@@ -36,7 +36,7 @@ uniform vec3 wind;
 
 uniform float emitSpeed;
 uniform float emitVary;
-
+uniform float emitPercent;
 uniform float speedVary;
 
 
@@ -73,6 +73,10 @@ void main() {
       }
       highp float offsetTime=mod(currentTime,totalTime)-staticInfo.z;
      if(offsetTime<deltaTime&&offsetTime>0.0){
+     if(rnd()>emitPercent){
+     gl_FragColor=vec4(0.0,0.0,0.0,0.0);
+     return;
+     }
         #if (EMITTER_TYPE==0)
             vec3 dir=normalize(vec3(rnd_ext(),rnd_ext(),rnd_ext()));
         #elif (EMITTER_TYPE==1)

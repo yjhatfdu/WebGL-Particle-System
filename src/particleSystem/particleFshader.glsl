@@ -31,7 +31,9 @@ vec4 fcolor=color;
 #else
 fcolor=texture2D(particleTexture,vUvCoord);
 #endif
-float fopacity=1.0-2.0*distance(uv,vec2(0.5,0.5));
-fcolor.w=fcolor.w*fopacity;
-gl_FragColor=vec4(1.0,1.0,1.0,fopacity*opacity);
+//float fopacity=1.0-2.0*distance(uv,vec2(0.5,0.5));
+//float fopacity=1.0-step(0.5,distance(uv,vec2(0.5,0.5)));
+//fcolor.w=fcolor.w*fopacity;
+//gl_FragColor=vec4(1.0,1.0,1.0,fopacity*opacity);
+gl_FragColor=vec4(1.0,1.0,1.0,1.0);
 }

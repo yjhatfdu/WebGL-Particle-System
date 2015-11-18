@@ -1,5 +1,5 @@
 var render=new Engine.GAME.Render(document.querySelector('#container'),false,1);
-var ps=new Engine.GAME.PS.GpuParticleSystem(2000,0.1,3,5);
+var ps=new Engine.GAME.PS.GpuParticleSystem(10000,0.1,3,5);
 render.appendChild(ps);
 var camera=new Engine.GAME.PerspectiveCamera();
 render.addCamera(camera);
@@ -46,12 +46,12 @@ window.ondevicemotion=function(e){
             break
         }
         case 90:{
-            ps.gravity[0]= g.y*0.1;
+            ps.gravity[0]= -g.y*0.1;
             ps.gravity[1]= g.x*0.1;
             break
         }
         case -90:{
-            ps.gravity[0]= -g.y*0.1;
+            ps.gravity[0]= g.y*0.1;
             ps.gravity[1]= -g.x*0.1;
             break
         }

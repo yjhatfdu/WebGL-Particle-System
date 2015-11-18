@@ -1,4 +1,4 @@
-#define PARTICLE_TYPE 0
+//#define PARTICLE_TYPE 0
 //#define totalTime 10.0
 /*#define PARTICLE_TYPE
     0:pointSprite;
@@ -6,7 +6,7 @@
     2:cube
 */
 
-#define USE_TEXTURE 0
+//#define USE_TEXTURE 0
 
 
 
@@ -98,8 +98,11 @@ void main() {
 
     position=mvpMat*position;
      #if (PARTICLE_TYPE==0)
-//            gl_PointSize=clamp(staticInfo.x/position.z,1.0,10.0);
-gl_PointSize=1.0;
+        #if (SIMPLE_PARTICLE==0)
+                   gl_PointSize=clamp(staticInfo.x/position.z,1.0,10.0);
+        #else
+    gl_PointSize=1.0;
+#endif
      #endif
     #if (USE_TEXTURE==0)
     color=unpack(position[3]);

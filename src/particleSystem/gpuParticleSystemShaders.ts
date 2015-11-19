@@ -30,20 +30,23 @@ vec4 fcolor=color;
 #else
 fcolor=texture2D(particleTexture,vUvCoord);
 #endif
-//float fopacity=1.0-2.0*distance(uv,vec2(0.5,0.5));
+#if (SIMPLE_PARTICLE==0)
+float fopacity=1.0-2.0*distance(uv,vec2(0.5,0.5));
 //float fopacity=1.0-step(0.5,distance(uv,vec2(0.5,0.5)));
-//fcolor.w=fcolor.w*fopacity;
-//gl_FragColor=vec4(1.0,1.0,1.0,fopacity*opacity);
+fcolor.w=fcolor.w*fopacity;
+gl_FragColor=vec4(1.0,1.0,1.0,fopacity*opacity);
+#else
 gl_FragColor=vec4(1.0,1.0,1.0,1.0);
+#endif
 }`;static particleVShader=`
-#define PARTICLE_TYPE 0
+//#define PARTICLE_TYPE 0
 //#define totalTime 10.0
 /*#define PARTICLE_TYPE
     0:pointSprite;
     1:rectangle;
     2:cube
 */
-#define USE_TEXTURE 0
+//#define USE_TEXTURE 0
 attribute vec2 uv;
 uniform float deltaTime;
 uniform float currentTime;
@@ -110,8 +113,11 @@ void main() {
         #endif
     position=mvpMat*position;
      #if (PARTICLE_TYPE==0)
-//            gl_PointSize=clamp(staticInfo.x/position.z,1.0,10.0);
-gl_PointSize=1.0;
+        #if (SIMPLE_PARTICLE==0)
+                   gl_PointSize=clamp(staticInfo.x/position.z,1.0,10.0);
+        #else
+    gl_PointSize=1.0;
+#endif
      #endif
     #if (USE_TEXTURE==0)
     color=unpack(position[3]);

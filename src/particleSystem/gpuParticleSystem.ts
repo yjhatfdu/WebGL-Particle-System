@@ -42,7 +42,8 @@ module Engine{
                     'PARTICLE_TYPE':0,
                     'USE_TEXTURE':0,
                     'EMITTER_TYPE':0,
-                    'USE_WIND':0
+                    'USE_WIND':0,
+                    'SIMPLE_PARTICLE':0
                 };
 
                 particleProperty={

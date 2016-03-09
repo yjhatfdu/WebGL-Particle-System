@@ -1,5 +1,7 @@
+Demo http://yjhatfdu.github.io/WebGL-Particle-System/test.html
 This is a part of Next Generation LLPractice(https://m.tianyi9.com)'s Engine.
 A simple implement of GPU based stateful particle system on webgl.
+Support geavity in mobile device.
 Need to be improved
 
 How to test:
